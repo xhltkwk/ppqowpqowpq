@@ -132,9 +132,9 @@
     <ClCompile Include="..\..\..\..\Downloads\dune 1.5_skeleton\io.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\Downloads\dune 1.5_skeleton\common.h" />
     <ClInclude Include="..\..\..\..\Downloads\dune 1.5_skeleton\display.h" />
     <ClInclude Include="..\..\..\..\Downloads\dune 1.5_skeleton\io.h" />
+    <ClInclude Include="common.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

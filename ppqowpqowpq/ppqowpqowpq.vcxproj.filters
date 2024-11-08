@@ -26,13 +26,13 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\Downloads\dune 1.5_skeleton\common.h">
-      <Filter>소스 파일</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\Downloads\dune 1.5_skeleton\display.h">
       <Filter>소스 파일</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Downloads\dune 1.5_skeleton\io.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="common.h">
       <Filter>소스 파일</Filter>
     </ClInclude>
   </ItemGroup>
