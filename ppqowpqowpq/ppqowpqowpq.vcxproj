@@ -127,9 +127,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\Downloads\dune 1.5_skeleton\display.c" />
     <ClCompile Include="..\..\..\..\Downloads\dune 1.5_skeleton\engine.c" />
     <ClCompile Include="..\..\..\..\Downloads\dune 1.5_skeleton\io.c" />
+    <ClCompile Include="display.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\Downloads\dune 1.5_skeleton\display.h" />

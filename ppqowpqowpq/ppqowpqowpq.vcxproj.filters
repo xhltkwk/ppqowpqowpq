@@ -18,10 +18,10 @@
     <ClCompile Include="..\..\..\..\Downloads\dune 1.5_skeleton\engine.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Downloads\dune 1.5_skeleton\display.c">
+    <ClCompile Include="..\..\..\..\Downloads\dune 1.5_skeleton\io.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Downloads\dune 1.5_skeleton\io.c">
+    <ClCompile Include="display.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
