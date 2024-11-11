@@ -11,6 +11,9 @@
 // 출력할 내용들의 좌상단(topleft) 좌표
 const POSITION resource_pos = { 0, 0 };
 const POSITION map_pos = { 1, 0 };
+const POSITION status_pos = { 0,50 }; // 상태창 예시 위치
+const POSITION command_pos = { 20,0 }; // 명령창의 예시 위치
+const POSITION system_message_pos = { 22,0 }; // 시스템 메시지 위치
 
 
 char backbuf[MAP_HEIGHT][MAP_WIDTH] = { 0 };

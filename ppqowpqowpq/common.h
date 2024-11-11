@@ -14,7 +14,6 @@
 #define MAP_WIDTH	60
 #define MAP_HEIGHT	18
 
-//asdsadsaasdsasdadsa
 /* ================= 위치와 방향 =================== */
 // 맵에서 위치를 나타내는 구조체
 typedef struct {
