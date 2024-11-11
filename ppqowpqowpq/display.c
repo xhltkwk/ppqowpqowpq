@@ -23,6 +23,9 @@ void project(char src[N_LAYER][MAP_HEIGHT][MAP_WIDTH], char dest[MAP_HEIGHT][MAP
 void display_resource(RESOURCE resource);
 void display_map(char map[N_LAYER][MAP_HEIGHT][MAP_WIDTH]);
 void display_cursor(CURSOR cursor);
+void display_system_message(); // 시스템 메시지 출력 함수
+void display_object_info(); // 객체 정보 출력 함수
+void display_commands(); // 명령어 출력 함수
 
 
 void display(
