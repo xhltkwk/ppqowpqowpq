@@ -11,9 +11,9 @@
 // 출력할 내용들의 좌상단(topleft) 좌표
 const POSITION resource_pos = { 0, 0 };
 const POSITION map_pos = { 1, 0 };
-const POSITION status_pos = { 0,50 }; // 상태창  위치
-const POSITION command_pos = { 20,0 }; // 명령창의  위치
-const POSITION system_message_pos = { 22,0 }; // 시스템 메시지 위치
+const POSITION status_pos = { 0,70 }; // 상태창  위치
+const POSITION command_pos = { 20,70 }; // 명령창의  위치
+const POSITION system_message_pos = { 20,0 }; // 시스템 메시지 위치
 
 
 char backbuf[MAP_HEIGHT][MAP_WIDTH] = { 0 };
@@ -47,6 +47,7 @@ void display(
 
 }
 
+
 void display_resource(RESOURCE resource) {
 	move_cursor_to(resource_pos.x, resource_pos.y);
 	set_color(COLOR_RESOURCE);
@@ -78,9 +79,11 @@ void display_map(char map[N_LAYER][MAP_HEIGHT][MAP_WIDTH]) {
 			if (frontbuf[i][j] != backbuf[i][j]) {
 				POSITION pos = { i, j };
 				printc(padd(map_pos, pos), backbuf[i][j], COLOR_DEFAULT);
+				
 			}
 			frontbuf[i][j] = backbuf[i][j];
 		}
+		
 	}
 }
 
@@ -99,19 +102,22 @@ void display_cursor(CURSOR cursor) {
 //시스템 메시지 화면에 출력
 void display_system_message() {
 	move_cursor_to(system_message_pos.x, system_message_pos.y);
-	printf("[시스템 메시지]: 게임 시작!");
+	gotoxy(system_message_pos);
+	printf("[System Message]: Game Start!"); // "[시스템 메시지] : 게임 시작!"
 }
 
 void display_object_info() {
 	// 상태창 좌표로 커서를 이동
 	move_cursor_to(status_pos.x, status_pos.y);
+	gotoxy(status_pos);
 	// 상태창 내용을 출력
-	printf("[객체 정보]: 선택된 유닛 정보 표시");
+	printf("[Object Info]: Displaying selected unit information"); // "[객체 정보]: 선택된 유닛 정보 표시"
 }
 
 // 명령어 창의 출력이 겹치지 않도록 조정
 void display_commands() {
 	move_cursor_to(command_pos.x, command_pos.y);
-	printf("[명령어]: 이동, 공격, 방어");
+	gotoxy(command_pos);
+	printf("[Commands]: Move, Attack, Defend"); // [명령어]: 이동, 공격, 방어
 }
 
