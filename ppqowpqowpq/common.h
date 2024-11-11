@@ -20,6 +20,12 @@ typedef struct {
 	int row, column;
 } POSITION;
 
+// POSITION 구조체 정의
+typedef struct {
+	int x;
+	int y;
+}POSITION;
+
 // 커서 위치
 typedef struct {
 	POSITION previous;  // 직전 위치

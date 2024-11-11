@@ -19,6 +19,8 @@ const POSITION system_message_pos = { 22,0 }; // 시스템 메시지 위치
 char backbuf[MAP_HEIGHT][MAP_WIDTH] = { 0 };
 char frontbuf[MAP_HEIGHT][MAP_WIDTH] = { 0 };
 
+
+
 void project(char src[N_LAYER][MAP_HEIGHT][MAP_WIDTH], char dest[MAP_HEIGHT][MAP_WIDTH]);
 void display_resource(RESOURCE resource);
 void display_map(char map[N_LAYER][MAP_HEIGHT][MAP_WIDTH]);
@@ -36,10 +38,10 @@ void display(
 	display_resource(resource);
 	display_map(map);
 	display_cursor(cursor);
-	// display_system_message()
-	// display_object_info()
-	// display_commands()
-	// ...
+	display_system_message();
+	display_object_info();
+	display_commands();
+	
 }
 
 void display_resource(RESOURCE resource) {
@@ -88,4 +90,22 @@ void display_cursor(CURSOR cursor) {
 
 	ch = frontbuf[curr.row][curr.column];
 	printc(padd(map_pos, curr), ch, COLOR_CURSOR);
+}
+
+//시스템 메시지 화면에 출력
+void display_system_message() {
+	move_cursor_to(system_message_pos.x, system_message_pos.y);
+	print("[시스템 메시지]: 게임 시작!");
+}
+
+// 선택된 객체의 정보를 출력하는 코드
+void display_object_info() {
+	move_cursor_to(status_pos.x, status_pos.y);
+	print("[객체 정보]: 선택된 유닛 정보 표시");
+}
+
+// 명령어를 출력하는 코드
+void display_commands() {
+	move_cursor_to(command_pos.x, command_pos.y);
+	print("[명령어]: 이동, 공격, 방어");
 }
