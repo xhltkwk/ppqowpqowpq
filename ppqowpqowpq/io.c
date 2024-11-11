@@ -2,6 +2,10 @@
 * raw(?) I/O
 */
 #include "io.h"
+#include "common.h"
+#include <windows.h> // Windows-specific functions for console manipulation
+#include <conio.h>   // For _kbhit() and _getch()
+#include <stdio.h>   // For printf()
 
 void gotoxy(POSITION pos) {
 	COORD coord = { pos.column, pos.row }; // 행, 열 반대로 전달
@@ -40,3 +44,9 @@ KEY get_key(void) {
 	default: return k_undef;
 	}
 }
+
+void move_cursor_to(int x, int y) {
+	COORD coord = { x, y };
+	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+}
+

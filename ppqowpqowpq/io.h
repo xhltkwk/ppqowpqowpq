@@ -12,5 +12,3 @@ void gotoxy(POSITION pos);
 void set_color(int color);
 
 #endif
-
-#pragma once

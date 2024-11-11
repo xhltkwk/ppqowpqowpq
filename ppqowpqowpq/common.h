@@ -18,13 +18,8 @@
 // 맵에서 위치를 나타내는 구조체
 typedef struct {
 	int row, column;
+	int x, y;
 } POSITION;
-
-// POSITION 구조체 정의
-typedef struct {
-	int x;
-	int y;
-}POSITION;
 
 // 커서 위치
 typedef struct {

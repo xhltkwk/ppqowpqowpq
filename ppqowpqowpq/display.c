@@ -28,23 +28,27 @@ void display_cursor(CURSOR cursor);
 void display_system_message(); // 시스템 메시지 출력 함수
 void display_object_info(); // 객체 정보 출력 함수
 void display_commands(); // 명령어 출력 함수
+void move_cursor_to(int x, int y); // 커서 이동
+
 
 
 void display(
 	RESOURCE resource,
 	char map[N_LAYER][MAP_HEIGHT][MAP_WIDTH],
 	CURSOR cursor)
-{
+{  
+	// 각 영역을 화면에 출력
 	display_resource(resource);
 	display_map(map);
 	display_cursor(cursor);
 	display_system_message();
 	display_object_info();
 	display_commands();
-	
+
 }
 
 void display_resource(RESOURCE resource) {
+	move_cursor_to(resource_pos.x, resource_pos.y);
 	set_color(COLOR_RESOURCE);
 	gotoxy(resource_pos);
 	printf("spice = %d/%d, population=%d/%d\n",
@@ -95,17 +99,19 @@ void display_cursor(CURSOR cursor) {
 //시스템 메시지 화면에 출력
 void display_system_message() {
 	move_cursor_to(system_message_pos.x, system_message_pos.y);
-	print("[시스템 메시지]: 게임 시작!");
+	printf("[시스템 메시지]: 게임 시작!");
 }
 
-// 선택된 객체의 정보를 출력하는 코드
 void display_object_info() {
+	// 상태창 좌표로 커서를 이동
 	move_cursor_to(status_pos.x, status_pos.y);
-	print("[객체 정보]: 선택된 유닛 정보 표시");
+	// 상태창 내용을 출력
+	printf("[객체 정보]: 선택된 유닛 정보 표시");
 }
 
-// 명령어를 출력하는 코드
+// 명령어 창의 출력이 겹치지 않도록 조정
 void display_commands() {
 	move_cursor_to(command_pos.x, command_pos.y);
-	print("[명령어]: 이동, 공격, 방어");
+	printf("[명령어]: 이동, 공격, 방어");
 }
+
