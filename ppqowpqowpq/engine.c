@@ -144,6 +144,38 @@ void cursor_move(DIRECTION dir) {
 	}
 }
 
+void handle_key_input(KEY key) {
+	DIRECTION dir = d_stay;
+	bool is_double_click = false;
+
+	if (is_arrow_key(key)) {
+		if (key == last_key && (clock() - last_key_time < CLOCKS_PER_SEC / 4)) {
+			is_double_click = true;
+		}
+		last_key = key;
+		last_key_time = clock();
+
+		dir = ktod(key);
+		cursor_move(dir, is_double_click);
+	}
+
+	if (key == k_space) {
+		if (is_object(cursor.current)) {
+			selected_object = get_object_id(cursor.current);
+			display_object_info(selected_object);
+		}
+		else {
+			selected_object = -1;
+			display_message("사막 지형");
+		}
+	}
+
+	if (key == k_esc) {
+		selected_object = -1;
+		clear_status_display();
+	}
+}
+
 /* ================= sample object movement =================== */
 POSITION sample_obj_next_position(void) {
 	// 현재 위치와 목적지를 비교해서 이동 방향 결정	
