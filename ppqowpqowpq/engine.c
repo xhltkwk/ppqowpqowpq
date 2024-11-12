@@ -45,7 +45,6 @@ int main(void) {
 
 	init();
 	intro();
-	display(resource, map, cursor);
 
 
 	while (1) {
