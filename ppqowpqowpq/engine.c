@@ -119,15 +119,28 @@ static clock_t last_key_time = 0; //마지막 방향키 입력 시간
 static DIRECTION last_dir = d_stay; // 마지막 방향키 방향
 
 void cursor_move(DIRECTION dir) {
-	POSITION curr = cursor.current;
-	POSITION new_pos = pmove(curr, dir);
+	int move_distance = 1; // 기본 이동 거리
 
-	// validation check
-	if (1 <= new_pos.row && new_pos.row <= MAP_HEIGHT - 2 && \
-		1 <= new_pos.column && new_pos.column <= MAP_WIDTH - 2) {
+	// 더블클릭 감지: 같은 방향키가 250ms 내에 두 번 입력되면 더블클릭으로 인식
+	if (dir == last_dir && (clock() - last_key_time < CLOCKS_PER_SEC / 4)) {
+		move_distance = 3;  // 더블클릭 시 여러 칸 이동 (3칸)
+	}
 
-		cursor.previous = cursor.current;
-		cursor.current = new_pos;
+	// 마지막 입력 시간과 방향 업데이트
+	last_key_time = clock();
+	last_dir = dir;
+
+	for (int i = 0; i < move_distance; i++) {
+		POSITION curr = cursor.current;
+		POSITION new_pos = pmove(curr, dir);
+
+		// validation check: 새로운 위치가 맵 범위를 벗어나지 않도록 제한
+		if (1 <= new_pos.row && new_pos.row <= MAP_HEIGHT - 2 &&
+			1 <= new_pos.column && new_pos.column <= MAP_WIDTH - 2) {
+
+			cursor.previous = cursor.current;
+			cursor.current = new_pos;
+		}
 	}
 }
 
