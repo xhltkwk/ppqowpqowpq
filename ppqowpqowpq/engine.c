@@ -115,6 +115,9 @@ void init(void) {
 }
 
 // (가능하다면) 지정한 방향으로 커서 이동
+static clock_t last_key_time = 0; //마지막 방향키 입력 시간
+static DIRECTION last_dir = d_stay; // 마지막 방향키 방향
+
 void cursor_move(DIRECTION dir) {
 	POSITION curr = cursor.current;
 	POSITION new_pos = pmove(curr, dir);

@@ -21,7 +21,7 @@
 #define COLOR_BLACK    0   // 장판 - 검은색
 #define COLOR_ORANGE   6   // 스파이스 - 주황색
 #define COLOR_GRAY     8   // 기타 지형 - 회색
-
+#define COLOR_WHITE    15
 
 // 지금은 자원, 맵, 커서만 표시
 // 앞으로 화면에 표시할 내용들 여기에 추가하기

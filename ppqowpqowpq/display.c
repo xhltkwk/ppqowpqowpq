@@ -37,6 +37,7 @@ void display(
 	char map[N_LAYER][MAP_HEIGHT][MAP_WIDTH],
 	CURSOR cursor)
 {  
+	
 	// 각 영역을 화면에 출력
 	display_resource(resource);
 	display_map(map);
@@ -48,15 +49,16 @@ void display(
 }
 
 
+// 자원 상태를 화면에 출력하는 함수
 void display_resource(RESOURCE resource) {
 	move_cursor_to(resource_pos.x, resource_pos.y);
 	set_color(COLOR_RESOURCE);
 	gotoxy(resource_pos);
-	printf("spice = %d/%d, population=%d/%d\n",
+	printf("spice = %d/%d, population=%d/%d",
 		resource.spice, resource.spice_max,
-		resource.population, resource.population_max
-	);
+		resource.population, resource.population_max);
 }
+
 
 // subfunction of draw_map()
 void project(char src[N_LAYER][MAP_HEIGHT][MAP_WIDTH], char dest[MAP_HEIGHT][MAP_WIDTH]) {
@@ -87,7 +89,7 @@ void display_map(char map[N_LAYER][MAP_HEIGHT][MAP_WIDTH]) {
 				case 'B': color = (pos.column < MAP_WIDTH / 2) ? COLOR_BLUE : COLOR_RED; break;
 				case 'H': color = (pos.column < MAP_WIDTH / 2) ? COLOR_BLUE : COLOR_RED; break;
 				case 'W': color = COLOR_YELLOW; break;
-				case 'P': color = COLOR_BLACK; break;
+				case 'P': color = COLOR_WHITE; break;
 				case '5': color = COLOR_ORANGE; break;
 				case 'R': color = COLOR_GRAY; break;
 				}
@@ -116,7 +118,7 @@ void display_cursor(CURSOR cursor) {
 void display_system_message() {
 	move_cursor_to(system_message_pos.x, system_message_pos.y);
 	gotoxy(system_message_pos);
-	printf("[System Message]: Game Start!"); // "[시스템 메시지] : 게임 시작!"
+	printf("[System Message]:Game Start!"); // "[시스템 메시지] : 게임 시작!"
 }
 
 void display_object_info() {
@@ -124,39 +126,37 @@ void display_object_info() {
 	move_cursor_to(status_pos.x, status_pos.y);
 	gotoxy(status_pos);
 	// 상태창 내용을 출력
-	printf("[Object Info]: Displaying selected unit information"); // "[객체 정보]: 선택된 유닛 정보 표시"
+	printf("[Object Info]:Displaying selected unit information"); // "[객체 정보]: 선택된 유닛 정보 표시"
 }
 
 // 명령어 창의 출력이 겹치지 않도록 조정
 void display_commands() {
 	move_cursor_to(command_pos.x, command_pos.y);
 	gotoxy(command_pos);
-	printf("[Commands]: Move, Attack, Defend"); // [명령어]: 이동, 공격, 방어
+	printf("[Commands]:Move, Attack, Defend"); // [명령어]: 이동, 공격, 방어
 }
 
 // 초기 상태를 설정하여 출력하는 함수
 void display_initial_state(char map[N_LAYER][MAP_HEIGHT][MAP_WIDTH]) {
 	// 초기 상태 맵 설정
-	map[0][14][3] = 'B';      // 아트레이디스 본진
-	map[0][14][4] = 'P';      // 아트레이디스 장판
-	map[0][13][3] = 'H';      // 아트레이디스 하베스터
+	map[0][16][2] = 'B';      // 아트레이디스 본진
+	map[0][16][4] = 'P';      // 아트레이디스 장판
+	map[0][15][1] = 'H';      // 아트레이디스 하베스터
 
-	map[0][2][56] = 'P';     // 하코넨 장판
-	map[0][2][57] = 'B';     // 하코넨 본진
-	map[0][3][57] = 'H';     // 하코넨 하베스터
+	map[0][1][54] = 'P';     // 하코넨 장판
+	map[0][1][57] = 'B';     // 하코넨 본진
+	map[0][2][58] = 'H';     // 하코넨 하베스터
 
-	map[0][2][7] = '5';      // 스파이스 매장지 (좌상단)
-	map[0][12][55] = '5';      // 스파이스 매장지 (우하단)
+	map[0][12][1] = '5';      // 스파이스 매장지 (좌상단)
+	map[0][5][58] = '5';      // 스파이스 매장지 (우하단)
 
 	map[0][5][20] = 'R';      // 바위
-	map[0][8][30] = 'R';      // 바위
-	map[0][10][18] = 'R';      // 바위
-	map[0][10][40] = 'R';      // 바위
+	map[0][10][15] = 'R';      // 바위
+	map[0][13][45] = 'R';      // 바위
 	map[0][12][25] = 'R';      // 바위
-	map[0][6][35] = 'R';      // 바위
+	map[0][6][40] = 'R';      // 바위
 
 	map[0][4][12] = 'W';      // 샌드웜 (상단)
-	map[0][11][45] = 'W';      // 샌드웜 (하단)
-
+	map[0][11][35] = 'W';      // 샌드웜 (하단)
 }
 
