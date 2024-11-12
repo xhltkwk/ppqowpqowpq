@@ -14,7 +14,7 @@ POSITION sample_obj_next_position(void);
 static KEY last_key = k_none; // 마지막 입력된 키
 static clock_t last_key_time = 0; //마지막 방향키 입력 
 static DIRECTION last_dir = d_stay; //마지막 방향기 방향
-
+int selected_object = -1; //선택된 오브젝트 ID
 
 /* ================= control =================== */
 int sys_clock = 0;		// system-wide clock(ms)
@@ -151,7 +151,6 @@ int get_object_id(POSITION pos) {
 	return map[1][pos.row][pos.column];
 }
 
-static int selected_object = -1; //선택된 오브젝트 ID
 
 
 void handle_key_input(KEY key) {
@@ -171,17 +170,17 @@ void handle_key_input(KEY key) {
 
 	if (key == k_space) {
 		if (is_object(cursor.current)) {
-			selected_object = get_object_id(cursor.current);
+			selected_object = get_object_id(cursor.current); // 선택된 오브젝트 ID 저장
 			display_object_info(selected_object);
 		}
 		else {
-			selected_object = -1;
+			selected_object = -1; // 선택된 오브젝트 없음
 			display_message("사막 지형");
 		}
 	}
 
 	if (key == k_esc) {
-		selected_object = -1;
+		selected_object = -1; // 선택 취소
 		clear_status_display();
 	}
 }

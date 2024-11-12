@@ -19,7 +19,7 @@ const POSITION system_message_pos = { 20,0 }; // 시스템 메시지 위치
 char backbuf[MAP_HEIGHT][MAP_WIDTH] = { 0 };
 char frontbuf[MAP_HEIGHT][MAP_WIDTH] = { 0 };
 
-
+extern int selected_object;
 
 void project(char src[N_LAYER][MAP_HEIGHT][MAP_WIDTH], char dest[MAP_HEIGHT][MAP_WIDTH]);
 void display_resource(RESOURCE resource);
@@ -37,17 +37,14 @@ void display(
 	char map[N_LAYER][MAP_HEIGHT][MAP_WIDTH],
 	CURSOR cursor)
 {  
-	
 	// 각 영역을 화면에 출력
-	display_resource(resource);
-	display_map(map);
-	display_cursor(cursor);
+	display_resource(resource);               // 자원 정보 출력
+	display_map(map);                         // 맵 출력
+	display_cursor(cursor);                   // 커서 출력
+	display_message("Game Start!");           // 시스템 메시지 출력
+	display_object_info(selected_object);     // 오브젝트 ID 정보 출력 (selected_object가 정의되어 있어야 합니다)
+	display_commands();
 }
-
-void display_system_message(const char* message);  // 메시지를 인자로 받음
-void display_object_info(int object_id);           // 오브젝트 ID를 인자로 받음
-void clear_status_display();
-
 
 // 자원 상태를 화면에 출력하는 함수
 void display_resource(RESOURCE resource) {
@@ -115,29 +112,30 @@ void display_cursor(CURSOR cursor) {
 }
 
 //시스템 메시지 화면에 출력
-// display.c 파일
+// 시스템 메시지 화면에 출력 함수 (display_message로 일관성 있게 사용)
 void display_message(const char* message) {
 	move_cursor_to(system_message_pos.x, system_message_pos.y);  // 메시지를 출력할 위치로 이동
 	gotoxy(system_message_pos);
 	printf("[System Message]: %s", message);
 }
 
-
+// 오브젝트 정보 화면에 출력
 void display_object_info(int object_id) {
 	// 상태창 좌표로 커서를 이동
 	move_cursor_to(status_pos.x, status_pos.y);
 	gotoxy(status_pos);
 	// 상태창 내용을 출력
-	printf("[Object Info]:오브젝트 ID %d의 정보 표시",object_id); // "[객체 정보]: 선택된 유닛 정보 표시"
+	printf("[Object Info]: 오브젝트 ID %d의 정보 표시", object_id); // "[객체 정보]: 선택된 유닛 정보 표시"
 }
 
 // 명령어 창의 출력이 겹치지 않도록 조정
 void display_commands() {
 	move_cursor_to(command_pos.x, command_pos.y);
 	gotoxy(command_pos);
-	printf("[Commands]:Move, Attack, Defend"); // [명령어]: 이동, 공격, 방어
+	printf("[Commands]: Move, Attack, Defend"); // [명령어]: 이동, 공격, 방어
 }
 
+// 상태창을 지우는 함수
 void clear_status_display() {
 	move_cursor_to(status_pos.x, status_pos.y);
 	gotoxy(status_pos);
