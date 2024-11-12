@@ -25,8 +25,8 @@ void project(char src[N_LAYER][MAP_HEIGHT][MAP_WIDTH], char dest[MAP_HEIGHT][MAP
 void display_resource(RESOURCE resource);
 void display_map(char map[N_LAYER][MAP_HEIGHT][MAP_WIDTH]);
 void display_cursor(CURSOR cursor);
-void display_system_message(); // 시스템 메시지 출력 함수
-void display_object_info(); // 객체 정보 출력 함수
+void display_message(const char* message); // 시스템 메시지 출력 함수
+void display_object_info(int object_id); // 객체 정보 출력 함수
 void display_commands(); // 명령어 출력 함수
 void move_cursor_to(int x, int y); // 커서 이동
 
@@ -42,11 +42,11 @@ void display(
 	display_resource(resource);
 	display_map(map);
 	display_cursor(cursor);
-	display_system_message();
-	display_object_info();
-	display_commands();
-
 }
+
+void display_system_message(const char* message);  // 메시지를 인자로 받음
+void display_object_info(int object_id);           // 오브젝트 ID를 인자로 받음
+void clear_status_display();
 
 
 // 자원 상태를 화면에 출력하는 함수
@@ -115,11 +115,13 @@ void display_cursor(CURSOR cursor) {
 }
 
 //시스템 메시지 화면에 출력
-void display_system_message(const char* message) {
-	move_cursor_to(system_message_pos.x, system_message_pos.y);
+// display.c 파일
+void display_message(const char* message) {
+	move_cursor_to(system_message_pos.x, system_message_pos.y);  // 메시지를 출력할 위치로 이동
 	gotoxy(system_message_pos);
-	printf("[System Message]: %s",message); // "[시스템 메시지] : 게임 시작!"
+	printf("[System Message]: %s", message);
 }
+
 
 void display_object_info(int object_id) {
 	// 상태창 좌표로 커서를 이동
@@ -165,4 +167,3 @@ void display_initial_state(char map[N_LAYER][MAP_HEIGHT][MAP_WIDTH]) {
 	map[0][4][12] = 'W';      // 샌드웜 (상단)
 	map[0][11][35] = 'W';      // 샌드웜 (하단)
 }
-

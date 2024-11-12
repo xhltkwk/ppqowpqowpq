@@ -31,5 +31,10 @@ void display(
 	CURSOR cursor
 );
 
+// display.h 파일에 추가
+void display_object_info(int object_id);
+void display_message(const char* message);
+void clear_status_display();
+
 #endif
 #pragma once

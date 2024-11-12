@@ -8,9 +8,12 @@
 void init(void);
 void intro(void);
 void outro(void);
-void cursor_move(DIRECTION dir);
+void cursor_move(DIRECTION dir, bool is_double_click);
 void sample_obj_move(void);
 POSITION sample_obj_next_position(void);
+static KEY last_key = k_none; // 마지막 입력된 키
+static clock_t last_key_time = 0; //마지막 방향키 입력 
+static DIRECTION last_dir = d_stay; //마지막 방향기 방향
 
 
 /* ================= control =================== */
@@ -53,7 +56,7 @@ int main(void) {
 
 		// 키 입력이 있으면 처리
 		if (is_arrow_key(key)) {
-			cursor_move(ktod(key));
+			cursor_move(ktod(key),false);
 		}
 		else {
 			// 방향키 외의 입력
@@ -114,12 +117,8 @@ void init(void) {
 	display_initial_state(map);
 }
 
-// (가능하다면) 지정한 방향으로 커서 이동
-static clock_t last_key_time = 0; //마지막 방향키 입력 시간
-static DIRECTION last_dir = d_stay; // 마지막 방향키 방향
-
-void cursor_move(DIRECTION dir) {
-	int move_distance = 1; // 기본 이동 거리
+void cursor_move(DIRECTION dir, bool is_double_click) {
+	int move_distance = is_double_click ? 3 : 1; // 기본 이동 거리
 
 	// 더블클릭 감지: 같은 방향키가 250ms 내에 두 번 입력되면 더블클릭으로 인식
 	if (dir == last_dir && (clock() - last_key_time < CLOCKS_PER_SEC / 4)) {
@@ -144,6 +143,17 @@ void cursor_move(DIRECTION dir) {
 	}
 }
 
+bool is_object(POSITION pos) {
+	return map[1][pos.row][pos.column] != -1;
+}
+
+int get_object_id(POSITION pos) {
+	return map[1][pos.row][pos.column];
+}
+
+static int selected_object = -1; //선택된 오브젝트 ID
+
+
 void handle_key_input(KEY key) {
 	DIRECTION dir = d_stay;
 	bool is_double_click = false;
@@ -156,7 +166,7 @@ void handle_key_input(KEY key) {
 		last_key_time = clock();
 
 		dir = ktod(key);
-		cursor_move(dir, is_double_click);
+		cursor_move(dir, is_double_click);  // is_double_click 인자 추가
 	}
 
 	if (key == k_space) {
