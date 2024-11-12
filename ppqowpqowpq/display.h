@@ -14,6 +14,14 @@
 #define COLOR_DEFAULT	15
 #define COLOR_CURSOR	112
 #define COLOR_RESOURCE  112
+// 색상 정의 추가
+#define COLOR_BLUE     9   // 아트레이디스 (플레이어) - 푸른색
+#define COLOR_RED      12  // 하코넨 (AI) - 빨간색
+#define COLOR_YELLOW   14  // 샌드웜 - 황토색
+#define COLOR_BLACK    0   // 장판 - 검은색
+#define COLOR_ORANGE   6   // 스파이스 - 주황색
+#define COLOR_GRAY     8   // 기타 지형 - 회색
+
 
 // 지금은 자원, 맵, 커서만 표시
 // 앞으로 화면에 표시할 내용들 여기에 추가하기

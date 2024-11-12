@@ -71,6 +71,7 @@ void project(char src[N_LAYER][MAP_HEIGHT][MAP_WIDTH], char dest[MAP_HEIGHT][MAP
 	}
 }
 
+
 void display_map(char map[N_LAYER][MAP_HEIGHT][MAP_WIDTH]) {
 	project(map, backbuf);
 
@@ -78,14 +79,26 @@ void display_map(char map[N_LAYER][MAP_HEIGHT][MAP_WIDTH]) {
 		for (int j = 0; j < MAP_WIDTH; j++) {
 			if (frontbuf[i][j] != backbuf[i][j]) {
 				POSITION pos = { i, j };
-				printc(padd(map_pos, pos), backbuf[i][j], COLOR_DEFAULT);
-				
+				char ch = backbuf[i][j];
+
+				// 문자에 따라 색상 설정
+				int color = COLOR_DEFAULT;
+				switch (ch) {
+				case 'B': color = (pos.column < MAP_WIDTH / 2) ? COLOR_BLUE : COLOR_RED; break;
+				case 'H': color = (pos.column < MAP_WIDTH / 2) ? COLOR_BLUE : COLOR_RED; break;
+				case 'W': color = COLOR_YELLOW; break;
+				case 'P': color = COLOR_BLACK; break;
+				case '5': color = COLOR_ORANGE; break;
+				case 'R': color = COLOR_GRAY; break;
+				}
+
+				printc(padd(map_pos, pos), ch, color);
 			}
 			frontbuf[i][j] = backbuf[i][j];
 		}
-		
 	}
 }
+
 
 // frontbuf[][]에서 커서 위치의 문자를 색만 바꿔서 그대로 다시 출력
 void display_cursor(CURSOR cursor) {
@@ -121,3 +134,30 @@ void display_commands() {
 	printf("[Commands]: Move, Attack, Defend"); // [명령어]: 이동, 공격, 방어
 }
 
+// 초기 상태를 설정하여 출력하는 함수
+void display_initial_state(char map[N_LAYER][MAP_HEIGHT][MAP_WIDTH]) {
+	// 초기 상태 맵 설정
+	map[0][1][1] = 'B';      // 아트레이디스 본진
+	map[0][1][2] = 'P';      // 아트레이디스 장판
+	map[0][2][1] = 'H';      // 아트레이디스 하베스터
+
+	map[0][1][10] = 'P';     // 하코넨 장판
+	map[0][1][11] = 'B';     // 하코넨 본진
+	map[0][2][11] = 'H';     // 하코넨 하베스터
+
+	map[0][1][5] = '5';      // 스파이스 매장지 (좌상단)
+	map[0][8][5] = '5';      // 스파이스 매장지 (우하단)
+
+	map[0][3][3] = 'R';      // 바위
+	map[0][4][6] = 'R';      // 바위
+	map[0][6][2] = 'R';      // 바위
+	map[0][6][8] = 'R';      // 바위
+	map[0][9][3] = 'R';      // 바위
+	map[0][3][8] = 'R';      // 바위
+
+	map[0][2][7] = 'W';      // 샌드웜 (상단)
+	map[0][7][6] = 'W';      // 샌드웜 (하단)
+
+	// 초기 상태 출력
+	display_map(map);
+}

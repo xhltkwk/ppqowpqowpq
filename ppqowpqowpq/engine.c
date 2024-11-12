@@ -47,6 +47,7 @@ int main(void) {
 	intro();
 	display(resource, map, cursor);
 
+
 	while (1) {
 		// loop 돌 때마다(즉, TICK==10ms마다) 키 입력 확인
 		KEY key = get_key();
@@ -108,9 +109,10 @@ void init(void) {
 			map[1][i][j] = -1;
 		}
 	}
-
 	// object sample
-	map[1][obj.pos.row][obj.pos.column] = 'o';
+	/*map[1][obj.pos.row][obj.pos.column] = 'o';*/
+	//초기 상태 설정
+	display_initial_state(map);
 }
 
 // (가능하다면) 지정한 방향으로 커서 이동
