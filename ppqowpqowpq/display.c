@@ -83,15 +83,15 @@ void display_map(char map[N_LAYER][MAP_HEIGHT][MAP_WIDTH]) {
 				// 문자에 따라 색상 설정
 				int color = COLOR_DEFAULT;
 				switch (ch) {
-				case 'B': color = (pos.column < MAP_WIDTH / 2) ? COLOR_BLUE : COLOR_RED; break;
-				case 'H': color = (pos.column < MAP_WIDTH / 2) ? COLOR_BLUE : COLOR_RED; break;
+				case 'B': color = COLOR_BLUE; break;
+				case 'H': color = COLOR_RED; break;
 				case 'W': color = COLOR_YELLOW; break;
 				case 'P': color = COLOR_WHITE; break;
 				case '5': color = COLOR_ORANGE; break;
 				case 'R': color = COLOR_GRAY; break;
 				}
 
-				printc(padd(map_pos, pos), ch, color);
+				printc(padd(map_pos, pos), backbuf[i][j], color);
 			}
 			frontbuf[i][j] = backbuf[i][j];
 		}
@@ -104,17 +104,24 @@ void display_cursor(CURSOR cursor) {
 	POSITION prev = cursor.previous;
 	POSITION curr = cursor.current;
 
-	char ch = frontbuf[prev.row][prev.column];
-	printc(padd(map_pos, prev), ch, COLOR_DEFAULT);
-
-	ch = frontbuf[curr.row][curr.column];
-	printc(padd(map_pos, curr), ch, COLOR_CURSOR);
+	// 이전 위치의 문자와 원래 색상 복원
+	char ch_prev = frontbuf[prev.row][prev.column];
+	int color_prev = COLOR_DEFAULT; // 기본 색상
+	switch (ch_prev) {
+	case 'B': color_prev = COLOR_BLUE; break;
+	case 'H': color_prev = COLOR_RED; break;
+	case 'W': color_prev = COLOR_YELLOW; break;
+	case '5': color_prev = COLOR_ORANGE; break;
+	case 'R': color_prev = COLOR_GRAY; break;
+	}
+	printc(padd(map_pos, prev), ch_prev, color_prev); // 원래 색상으로 출력
 }
 
 //시스템 메시지 화면에 출력
 // 시스템 메시지 화면에 출력 함수 (display_message로 일관성 있게 사용)
 void display_message(const char* message) {
 	move_cursor_to(system_message_pos.x, system_message_pos.y);  // 메시지를 출력할 위치로 이동
+	set_color(COLOR_DEFAULT);
 	gotoxy(system_message_pos);
 	printf("[System Message]: %s", message);
 }
@@ -123,6 +130,7 @@ void display_message(const char* message) {
 void display_object_info(int object_id) {
 	// 상태창 좌표로 커서를 이동
 	move_cursor_to(status_pos.x, status_pos.y);
+	set_color(COLOR_DEFAULT);
 	gotoxy(status_pos);
 	// 상태창 내용을 출력
 	printf("[Object Info]: 오브젝트 ID %d의 정보 표시", object_id); // "[객체 정보]: 선택된 유닛 정보 표시"
@@ -138,6 +146,7 @@ void display_commands() {
 // 상태창을 지우는 함수
 void clear_status_display() {
 	move_cursor_to(status_pos.x, status_pos.y);
+	set_color(COLOR_DEFAULT);
 	gotoxy(status_pos);
 	printf("                     "); // 빈 공간으로 덮어씌움
 }

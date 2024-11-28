@@ -35,6 +35,10 @@ void display(
 void display_object_info(int object_id);
 void display_message(const char* message);
 void clear_status_display();
-
+extern char backbuf[MAP_HEIGHT][MAP_WIDTH];
+extern char frontbuf[MAP_HEIGHT][MAP_WIDTH];
+extern const POSITION map_pos;
+bool is_object(POSITION pos);
+int get_object_id(POSITION pos);
 #endif
 #pragma once

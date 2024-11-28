@@ -94,5 +94,6 @@ typedef struct {
 	int next_move_time;	// 다음에 움직일 시간
 } OBJECT_SAMPLE;
 
+bool is_object(POSITION pos);
 #endif
 #pragma once
