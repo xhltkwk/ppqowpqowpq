@@ -169,37 +169,46 @@ void handle_key_input(KEY key) {
 	}
 
 	if (key == k_space) {
-		// 스페이스바를 누르면 현재 위치를 기준으로 선택 처리
-		int row = cursor.current.row;
-		int col = cursor.current.column;
-
-		// 현재 위치에 오브젝트가 있다면 그 오브젝트의 ID를 선택
-		if (is_object(cursor.current)) {
-			int new_selected_object = get_object_id(cursor.current); // 현재 위치의 오브젝트 ID
-
-			if (selected_object != new_selected_object) {
-				// 선택된 상태에서 다른 오브젝트 선택 시 대상 전환
-				selected_object = new_selected_object;
-				display_object_info(selected_object, cursor, map); // info 창에 새 오브젝트 정보 표시
-			}
-			else {
-				// 이미 같은 오브젝트가 선택된 상태에서의 추가 처리 (필요시)
-				display_object_info(selected_object, cursor, map); // 동일한 오브젝트 정보 갱신
-			}
+		// 스페이스바 입력 시에만 상태창 업데이트
+		char terrain = backbuf[cursor.current.row][cursor.current.column];
+		switch (terrain) {
+		case ' ':
+			selected_object = 0; // 빈 지형 (사막 지형)
+			break;
+		case 'B':
+			selected_object = 1; // 본진
+			break;
+		case 'W':
+			selected_object = 2; // 샌드웜
+			break;
+		case 'H':
+			selected_object = 3; // 하베스터
+			break;
+		case '5':
+			selected_object = 4; // 스파이스 매장지
+			break;
+		case 'P':
+			selected_object = 5; // 장판
+			break;
+		case 'R':
+			selected_object = 6; // 바위
+			break;
+		default:
+			selected_object = -1; // 선택되지 않음
+			break;
 		}
-		else {
-			// 오브젝트가 없으면 빈 지형 정보 표시
-			selected_object = -1; // 선택된 오브젝트 초기화
-			display_object_info(-1, cursor, map);  // 빈 지형 정보 출력
-		}
+		display_object_info(selected_object); // 상태창 업데이트
 	}
 
 	if (key == k_esc) {
 		// 선택 취소
 		selected_object = -1;
-		clear_status_display();  // 상태창 초기화
+		display_object_info(selected_object);  // 상태창 초기화
 	}
 }
+
+
+
 
 
 bool is_object(POSITION pos) {

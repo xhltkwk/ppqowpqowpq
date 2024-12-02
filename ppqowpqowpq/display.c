@@ -128,43 +128,38 @@ void display_message(const char* message) {
 }
 
 // 오브젝트 정보 화면에 출력
-void display_object_info(int object_id, CURSOR cursor, char map[N_LAYER][MAP_HEIGHT][MAP_WIDTH]) {
+void display_object_info(int object_id) {
 	move_cursor_to(status_pos.x, status_pos.y);
 	set_color(COLOR_DEFAULT);
 	gotoxy(status_pos);
 
-	// 커서 위치의 지형을 확인
-	int row = cursor.current.row;
-	int col = cursor.current.column;
-	char terrain = map[0][row][col]; // map[0] 레이어에서 확인
-
-	// 지형 정보 출력
-	if (terrain == ' ') {
-		// 빈 지형인 경우
-		printf("[Object Info]: 사막 지형"); // 공백으로 기존 내용 덮어씌움
+	// 선택된 오브젝트에 따라 상태창 출력
+	if (object_id == -1) {
+		printf("[Object Info]: 선택되지 않음        ");
+	}
+	else if (object_id == 0) {
+		printf("[Object Info]: 사막 지형            ");
 	}
 	else {
-		// 각 지형에 따른 정보 출력
-		switch (terrain) {
-		case 'B':
-			printf("[Object Info]: 본진(Base)"); break;
-		case 'W':
-			printf("[Object Info]: 샌드웜(Sandworm)"); break;
-		case 'H':
-			printf("[Object Info]: 하베스터(Harvester)"); break;
-		case '5': // 스파이스 매장지
-			printf("[Object Info]: 스파이스 매장지(매장량: %d) ", 1 + (rand() % 9)); // 예시로 매장량을 1~9 사이로 랜덤 표시
-			break;
-		case 'P':
-			printf("[Object Info]: 장판(Plate)      "); break;
-		case 'R':
-			printf("[Object Info]: 바위(Rock)       "); break;
+		// 각 object_id에 맞는 메시지 출력
+		switch (object_id) {
+		case 1:
+			printf("[Object Info]: 본진(Base)                 "); break;
+		case 2:
+			printf("[Object Info]: 샌드웜(Sandworm)           "); break;
+		case 3:
+			printf("[Object Info]: 하베스터(Harvester)        "); break;
+		case 4:
+			printf("[Object Info]: 스파이스 매장지(매장량: %d) ", 1 + (rand() % 9)); break;
+		case 5:
+			printf("[Object Info]: 장판(Plate)               "); break;
+		case 6:
+			printf("[Object Info]: 바위(Rock)                "); break;
 		default:
-			printf("[Object Info]: 선택되지 않음 "); break;
+			printf("[Object Info]: 알 수 없는 지형           "); break;
 		}
 	}
 }
-
 
 
 
