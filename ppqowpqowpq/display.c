@@ -36,15 +36,16 @@ void display(
 	RESOURCE resource,
 	char map[N_LAYER][MAP_HEIGHT][MAP_WIDTH],
 	CURSOR cursor)
-{  
+{
 	// 각 영역을 화면에 출력
 	display_resource(resource);               // 자원 정보 출력
 	display_map(map);                         // 맵 출력
 	display_cursor(cursor);                   // 커서 출력
 	display_message("Game Start!");           // 시스템 메시지 출력
-	display_object_info(selected_object);     // 오브젝트 ID 정보 출력 (selected_object가 정의되어 있어야 합니다)
+	display_object_info(selected_object, cursor, map);  // 오브젝트 ID 정보 출력 (selected_object가 정의되어 있어야 합니다)
 	display_commands();
 }
+
 
 // 자원 상태를 화면에 출력하는 함수
 void display_resource(RESOURCE resource) {
@@ -127,20 +128,45 @@ void display_message(const char* message) {
 }
 
 // 오브젝트 정보 화면에 출력
-void display_object_info(int object_id) {
+void display_object_info(int object_id, CURSOR cursor, char map[N_LAYER][MAP_HEIGHT][MAP_WIDTH]) {
 	move_cursor_to(status_pos.x, status_pos.y);
 	set_color(COLOR_DEFAULT);
 	gotoxy(status_pos);
 
-	if (object_id == -1) {
-		// 오브젝트가 없는 경우: 빈 지형
-		printf("[Object Info]: 사막 지형      "); // 공백으로 기존 내용 덮어씌움
+	// 커서 위치의 지형을 확인
+	int row = cursor.current.row;
+	int col = cursor.current.column;
+	char terrain = map[0][row][col]; // map[0] 레이어에서 확인
+
+	// 지형 정보 출력
+	if (terrain == ' ') {
+		// 빈 지형인 경우
+		printf("[Object Info]: 사막 지형"); // 공백으로 기존 내용 덮어씌움
 	}
 	else {
-		// 오브젝트가 있는 경우: ID 출력
-		printf("[Object Info]: 오브젝트 ID %d 선택됨", object_id);
+		// 각 지형에 따른 정보 출력
+		switch (terrain) {
+		case 'B':
+			printf("[Object Info]: 본진(Base)"); break;
+		case 'W':
+			printf("[Object Info]: 샌드웜(Sandworm)"); break;
+		case 'H':
+			printf("[Object Info]: 하베스터(Harvester)"); break;
+		case '5': // 스파이스 매장지
+			printf("[Object Info]: 스파이스 매장지(매장량: %d) ", 1 + (rand() % 9)); // 예시로 매장량을 1~9 사이로 랜덤 표시
+			break;
+		case 'P':
+			printf("[Object Info]: 장판(Plate)      "); break;
+		case 'R':
+			printf("[Object Info]: 바위(Rock)       "); break;
+		default:
+			printf("[Object Info]: 선택되지 않음 "); break;
+		}
 	}
 }
+
+
+
 
 
 // 명령어 창의 출력이 겹치지 않도록 조정
