@@ -138,7 +138,7 @@ void display_object_info(int object_id) {
 		printf("[Object Info]: 선택되지 않음        ");
 	}
 	else if (object_id == 0) {
-		printf("[Object Info]: 사막 지형            ");
+		printf("[Object Info]: 사막 지형                   ");
 	}
 	else {
 		// 각 object_id에 맞는 메시지 출력

@@ -121,8 +121,8 @@ void cursor_move(DIRECTION dir, bool is_double_click) {
 			// 문자에 따라 원래 색상 복원
 			int prev_color = COLOR_DEFAULT;
 			switch (prev_char) {
-			case 'B': prev_color = (curr.column < MAP_WIDTH / 2) ? COLOR_BLUE : COLOR_RED; break;
-			case 'H': prev_color = (curr.column < MAP_WIDTH / 2) ? COLOR_BLUE : COLOR_RED; break;
+			case 'B': prev_color = COLOR_BLUE; break;
+			case 'H': prev_color = COLOR_RED; break;
 			case 'W': prev_color = COLOR_YELLOW; break;
 			case 'P': prev_color = COLOR_WHITE; break;
 			case '5': prev_color = COLOR_ORANGE; break;
