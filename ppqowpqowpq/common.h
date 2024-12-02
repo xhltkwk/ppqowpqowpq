@@ -95,5 +95,6 @@ typedef struct {
 } OBJECT_SAMPLE;
 
 bool is_object(POSITION pos);
+
 #endif
 #pragma once

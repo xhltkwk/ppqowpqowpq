@@ -135,7 +135,7 @@ void display_object_info(int object_id) {
 
 	// 선택된 오브젝트에 따라 상태창 출력
 	if (object_id == -1) {
-		printf("[Object Info]: 선택되지 않음        ");
+		printf("[Object Info]:                           ");
 	}
 	else if (object_id == 0) {
 		printf("[Object Info]: 사막 지형                   ");

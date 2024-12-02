@@ -259,3 +259,4 @@ void sample_obj_move(void) {
 
 	obj.next_move_time = sys_clock + obj.speed;
 }
+
