@@ -128,13 +128,20 @@ void display_message(const char* message) {
 
 // 오브젝트 정보 화면에 출력
 void display_object_info(int object_id) {
-	// 상태창 좌표로 커서를 이동
 	move_cursor_to(status_pos.x, status_pos.y);
 	set_color(COLOR_DEFAULT);
 	gotoxy(status_pos);
-	// 상태창 내용을 출력
-	printf("[Object Info]: 오브젝트 ID %d의 정보 표시", object_id); // "[객체 정보]: 선택된 유닛 정보 표시"
+
+	if (object_id == -1) {
+		// 오브젝트가 없는 경우: 빈 지형
+		printf("[Object Info]: 사막 지형      "); // 공백으로 기존 내용 덮어씌움
+	}
+	else {
+		// 오브젝트가 있는 경우: ID 출력
+		printf("[Object Info]: 오브젝트 ID %d 선택됨", object_id);
+	}
 }
+
 
 // 명령어 창의 출력이 겹치지 않도록 조정
 void display_commands() {

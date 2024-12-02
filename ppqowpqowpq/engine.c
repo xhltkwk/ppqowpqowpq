@@ -169,14 +169,24 @@ void handle_key_input(KEY key) {
 	}
 
 	if (key == k_space) {
-		// 선택 기능: 현재 위치에 오브젝트가 있는지 확인
-		if (is_object(cursor.current)) {  // 커서 위치에 오브젝트가 있는 경우
-			selected_object = get_object_id(cursor.current);  // 선택된 오브젝트 ID 저장
-			display_object_info(selected_object);            // 오브젝트 정보 출력
+		// 스페이스바를 누르면 현재 위치를 기준으로 선택 처리
+		if (is_object(cursor.current)) {
+			int new_selected_object = get_object_id(cursor.current); // 현재 위치의 오브젝트 ID
+
+			if (selected_object != new_selected_object) {
+				// 선택된 상태에서 다른 오브젝트 선택 시 대상 전환
+				selected_object = new_selected_object;
+				display_object_info(selected_object); // info 창에 새 오브젝트 정보 표시
+			}
+			else {
+				// 이미 같은 오브젝트가 선택된 상태에서의 추가 처리 (필요시)
+				display_object_info(selected_object); // 동일한 오브젝트 정보 갱신
+			}
 		}
-		else {  // 커서 위치에 오브젝트가 없는 경우
-			selected_object = -1;  // 선택된 오브젝트 없음
-			display_message("사막 지형");  // 빈 지형 정보 표시
+		else {
+			// 오브젝트가 없으면 빈 지형 정보 표시
+			selected_object = -1; // 선택된 오브젝트 초기화
+			display_object_info(-1);  // 빈 지형 정보 출력
 		}
 	}
 
@@ -186,6 +196,8 @@ void handle_key_input(KEY key) {
 		clear_status_display();  // 상태창 초기화
 	}
 }
+
+
 
 
 bool is_object(POSITION pos) {

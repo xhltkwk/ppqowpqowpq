@@ -29,21 +29,24 @@ KEY get_key(void) {
 		return k_none;
 	}
 
-	int byte = _getch();    // 입력된 키를 전달 받기
+	int byte = _getch();    // 입력된 키를 전달 받음
 	switch (byte) {
 	case 'q': return k_quit;  // 'q'를 누르면 종료
+	case 27: return k_esc;    // ESC 키 처리
+	case 32: return k_space;  // 스페이스바 처리
 	case 224:
-		byte = _getch();  // MSB 224가 입력 되면 1바이트 더 전달 받기
+		byte = _getch();  // MSB 224가 입력되면 1바이트 더 전달받음
 		switch (byte) {
-		case 72: return k_up;
-		case 75: return k_left;
-		case 77: return k_right;
-		case 80: return k_down;
-		default: return k_undef;
+		case 72: return k_up;    // 위쪽 화살표
+		case 75: return k_left;  // 왼쪽 화살표
+		case 77: return k_right; // 오른쪽 화살표
+		case 80: return k_down;  // 아래쪽 화살표
+		default: return k_undef; // 정의되지 않은 키
 		}
-	default: return k_undef;
+	default: return k_undef; // 정의되지 않은 키
 	}
 }
+
 
 void move_cursor_to(int x, int y) {
 	COORD coord = { x, y };
