@@ -140,7 +140,7 @@ void display_object_info(int object_id) {  //상태창
 		printf("[Object Info]: 사막 지형                   ");
 	}
 	else {
-		// 각 object_id에 맞는 메시지 출력
+		
 		switch (object_id) {
 		case 1:
 			printf("[Object Info]: 본진(Base)                 "); break;
