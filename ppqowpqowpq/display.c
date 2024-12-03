@@ -88,7 +88,7 @@ void display_map(char map[N_LAYER][MAP_HEIGHT][MAP_WIDTH]) {
 				case 'H': color = COLOR_RED; break;
 				case 'W': color = COLOR_YELLOW; break;
 				case 'P': color = COLOR_WHITE; break;
-				case '5': color = COLOR_ORANGE; break;
+				case 'S': color = COLOR_ORANGE; break;
 				case 'R': color = COLOR_GRAY; break;
 				}
 
@@ -112,15 +112,14 @@ void display_cursor(CURSOR cursor) {
 	case 'B': color_prev = COLOR_BLUE; break;
 	case 'H': color_prev = COLOR_RED; break;
 	case 'W': color_prev = COLOR_YELLOW; break;
-	case '5': color_prev = COLOR_ORANGE; break;
+	case 'S': color_prev = COLOR_ORANGE; break;
 	case 'R': color_prev = COLOR_GRAY; break;
 	}
 	printc(padd(map_pos, prev), ch_prev, color_prev); // 원래 색상으로 출력
 }
 
 //시스템 메시지 화면에 출력
-// 시스템 메시지 화면에 출력 함수 (display_message로 일관성 있게 사용)
-void display_message(const char* message) {
+void display_message(const char* message) { 
 	move_cursor_to(system_message_pos.x, system_message_pos.y);  // 메시지를 출력할 위치로 이동
 	set_color(COLOR_DEFAULT);
 	gotoxy(system_message_pos);
@@ -128,7 +127,7 @@ void display_message(const char* message) {
 }
 
 // 오브젝트 정보 화면에 출력
-void display_object_info(int object_id) {
+void display_object_info(int object_id) {  //상태창
 	move_cursor_to(status_pos.x, status_pos.y);
 	set_color(COLOR_DEFAULT);
 	gotoxy(status_pos);
@@ -162,10 +161,8 @@ void display_object_info(int object_id) {
 }
 
 
-
-
 // 명령어 창의 출력이 겹치지 않도록 조정
-void display_commands() {
+void display_commands() { //명령창
 	move_cursor_to(command_pos.x, command_pos.y);
 	gotoxy(command_pos);
 	printf("[Commands]: Move, Attack, Defend"); // [명령어]: 이동, 공격, 방어
@@ -202,8 +199,8 @@ void display_initial_state(char map[N_LAYER][MAP_HEIGHT][MAP_WIDTH]) {
 	map[0][2][58] = 'B';
 	map[0][3][58] = 'H';     // 하코넨 하베스터
 
-	map[0][12][1] = '5';      // 스파이스 매장지 (좌상단)
-	map[0][5][58] = '5';      // 스파이스 매장지 (우하단)
+	map[0][12][1] = 'S';      // 스파이스 매장지 (좌상단)
+	map[0][5][58] = 'S';      // 스파이스 매장지 (우하단)
 
 	map[0][5][20] = 'R';      // 바위
 	map[0][5][21] = 'R';

@@ -125,7 +125,7 @@ void cursor_move(DIRECTION dir, bool is_double_click) {
 			case 'H': prev_color = COLOR_RED; break;
 			case 'W': prev_color = COLOR_YELLOW; break;
 			case 'P': prev_color = COLOR_WHITE; break;
-			case '5': prev_color = COLOR_ORANGE; break;
+			case 'S': prev_color = COLOR_ORANGE; break;
 			case 'R': prev_color = COLOR_GRAY; break;
 			default: prev_color = COLOR_DEFAULT; break;
 			}
@@ -184,7 +184,7 @@ void handle_key_input(KEY key) {
 		case 'H':
 			selected_object = 3; // 하베스터
 			break;
-		case '5':
+		case 'S':
 			selected_object = 4; // 스파이스 매장지
 			break;
 		case 'P':
