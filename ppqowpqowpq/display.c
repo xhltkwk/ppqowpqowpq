@@ -41,10 +41,17 @@ void display(
 	display_resource(resource);               // 자원 정보 출력
 	display_map(map);                         // 맵 출력
 	display_cursor(cursor);                   // 커서 출력
-	display_message("Game Start!");           // 시스템 메시지 출력
-	display_object_info(selected_object, cursor, map);  // 오브젝트 ID 정보 출력 (selected_object가 정의되어 있어야 합니다)
+	display_object_info(selected_object, cursor, map);  // 오브젝트 ID 정보 출력
 	display_commands();
+
+	// 초기 상태에서는 빈 메시지 출력
+	static bool is_message_initialized = false;
+	if (!is_message_initialized) {
+		display_message(NULL); // 초기 상태에서는 빈 메시지 출력
+		is_message_initialized = true;
+	}
 }
+
 
 
 // 자원 상태를 화면에 출력하는 함수
@@ -119,12 +126,20 @@ void display_cursor(CURSOR cursor) {
 }
 
 //시스템 메시지 화면에 출력
-void display_message(const char* message) { 
+void display_message(const char* message) {
 	move_cursor_to(system_message_pos.x, system_message_pos.y);  // 메시지를 출력할 위치로 이동
 	set_color(COLOR_DEFAULT);
 	gotoxy(system_message_pos);
-	printf("[System Message]: %s", message);
+	if (message == NULL || message[0] == '\0') {
+		// 메시지가 없는 경우 기본 상태 출력
+		printf("[System Message]:                      "); // 공백으로 기존 메시지 덮어쓰기
+	}
+	else {
+		// 메시지가 있는 경우 출력
+		printf("[System Message]: %s", message);
+	}
 }
+
 
 // 오브젝트 정보 화면에 출력
 void display_object_info(int object_id) {  //상태창

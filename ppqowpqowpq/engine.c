@@ -12,6 +12,7 @@ void cursor_move(DIRECTION dir, bool is_double_click);
 void handle_key_input(KEY key);
 void sample_obj_move(void);
 POSITION sample_obj_next_position(void);
+void create_harvester(POSITION base_position);
 //static KEY last_key = k_none; // 마지막 입력된 키
 //static clock_t last_key_time = 0; //마지막 방향키 입력 
 //static DIRECTION last_dir = d_stay; //마지막 방향기 방향
@@ -147,6 +148,27 @@ void cursor_move(DIRECTION dir, bool is_double_click) {
 	}
 }
 
+bool is_base(POSITION pos) {
+	return map[1][pos.row][pos.column] == 'B';
+}
+
+POSITION get_adjacent_position(POSITION base_pos, char object_type) {
+	// 기본적으로 -1, -1을 반환해 실패를 나타냄
+	POSITION invalid_pos = { -1, -1 };
+
+	// 본진 주변 4방향 확인
+	POSITION directions[] = { { -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 } };
+	for (int i = 0; i < 4; i++) {
+		POSITION adjacent = padd(base_pos, directions[i]);
+
+		if (1 <= adjacent.row && adjacent.row < MAP_HEIGHT - 1 &&
+			1 <= adjacent.column && adjacent.column < MAP_WIDTH - 1 &&
+			map[1][adjacent.row][adjacent.column] == ' ') {
+			return adjacent;
+		}
+	}
+	return invalid_pos;
+}
 
 void handle_key_input(KEY key) {
 	static KEY last_key = k_none;       // 마지막 입력된 키
@@ -205,11 +227,60 @@ void handle_key_input(KEY key) {
 		selected_object = -1;
 		display_object_info(selected_object);  // 상태창 초기화
 	}
+
+	if (key == 'H' || key == 'h') {
+		// 하베스터 생성 로직
+		char current_obj = map[0][cursor.current.row][cursor.current.column];
+		if (current_obj == 'B') {
+			// 커서 위치가 본진(`B`)일 경우
+			bool harvester_created = false;
+
+			// 본진 주변 위치를 탐색하여 빈 공간에 하베스터 배치
+			for (int dr = -1; dr <= 1 && !harvester_created; dr++) {
+				for (int dc = -1; dc <= 1 && !harvester_created; dc++) {
+					// 현재 위치 제외
+					if (dr == 0 && dc == 0) continue;
+
+					int new_row = cursor.current.row + dr;
+					int new_col = cursor.current.column + dc;
+
+					// 맵 범위 및 빈 공간 확인
+					if (new_row >= 0 && new_row < MAP_HEIGHT &&
+						new_col >= 0 && new_col < MAP_WIDTH &&
+						map[0][new_row][new_col] == ' ') {
+
+						map[0][new_row][new_col] = 'H'; // 하베스터 배치
+						harvester_created = true;
+						display_message("A new harvester ready");
+					}
+				}
+			}
+
+			// 주변에 빈 공간이 없는 경우
+			if (!harvester_created) {
+				display_message("Cannot create harvester here!");
+			}
+		}
+		else {
+			// 커서 위치가 본진이 아닌 경우
+			display_message("Cannot create harvester here!");
+		}
+	}
 }
 
-
-
-
+// 하베스터 생성 함수
+void create_harvester(POSITION base_position) {
+	// 본진 근처에 하베스터 배치
+	POSITION new_harvester_pos = { base_position.row + 1, base_position.column }; // 아래쪽에 배치
+	if (1 <= new_harvester_pos.row && new_harvester_pos.row <= MAP_HEIGHT - 2 &&
+		map[0][new_harvester_pos.row][new_harvester_pos.column] == ' ') {
+		map[0][new_harvester_pos.row][new_harvester_pos.column] = 'H'; // 하베스터 배치
+		display_message("A new harvester ready"); // 시스템 메시지 출력
+	}
+	else {
+		display_message("Not enough spice"); // 배치 실패 메시지
+	}
+}
 
 bool is_object(POSITION pos) {
 	return map[1][pos.row][pos.column] != -1;

@@ -32,6 +32,7 @@ KEY get_key(void) {
 	int byte = _getch();    // 입력된 키를 전달 받음
 	switch (byte) {
 	case 'q': return k_quit;  // 'q'를 누르면 종료
+	case 'H': case 'h':return 'H';
 	case 27: return k_esc;    // ESC 키 처리
 	case 32: return k_space;  // 스페이스바 처리
 	case 224:
@@ -46,7 +47,6 @@ KEY get_key(void) {
 	default: return k_undef; // 정의되지 않은 키
 	}
 }
-
 
 void move_cursor_to(int x, int y) {
 	COORD coord = { x, y };
