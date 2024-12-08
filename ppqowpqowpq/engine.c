@@ -33,16 +33,6 @@ RESOURCE resource = {
 	.population_max = 0
 };
 
-OBJECT_SAMPLE obj = {
-
-	.pos = {1, 1},
-	.dest = {MAP_HEIGHT - 2, MAP_WIDTH - 2},
-	.repr = 'o',
-	.speed = 300,
-	.next_move_time = 300
-
-};
-
 
 /* ================= main() =================== */
 int main(void) {
@@ -54,8 +44,6 @@ int main(void) {
 		KEY key = get_key();
 		handle_key_input(key); // 키 입력 처리
 
-		// 샘플 오브젝트 동작
-		sample_obj_move();
 
 		// 샌드웜 동작 추가
 		move_sandworm();
@@ -303,46 +291,6 @@ int get_object_id(POSITION pos) {
 }
 
 
-/* ================= sample object movement =================== */
-POSITION sample_obj_next_position(void) {
-	POSITION diff = psub(obj.dest, obj.pos);
-	DIRECTION dir;
-
-	if (diff.row == 0 && diff.column == 0) {
-		obj.dest = (obj.dest.row == 1 && obj.dest.column == 1) ?
-			(POSITION) {
-			MAP_HEIGHT - 2, MAP_WIDTH - 2
-		} :
-			(POSITION) {
-			1, 1
-		};
-			return obj.pos;
-	}
-
-	dir = (abs(diff.row) >= abs(diff.column)) ?
-		((diff.row >= 0) ? d_down : d_up) :
-		((diff.column >= 0) ? d_right : d_left);
-
-	POSITION next_pos = pmove(obj.pos, dir);
-
-	if (1 <= next_pos.row && next_pos.row <= MAP_HEIGHT - 2 &&
-		1 <= next_pos.column && next_pos.column <= MAP_WIDTH - 2 &&
-		map[1][next_pos.row][next_pos.column] < 0) {
-		return next_pos;
-	}
-	return obj.pos;
-}
-
-void sample_obj_move(void) {
-	if (sys_clock <= obj.next_move_time) return;
-
-	map[1][obj.pos.row][obj.pos.column] = -1;
-	obj.pos = sample_obj_next_position();
-	map[1][obj.pos.row][obj.pos.column] = obj.repr;
-
-	obj.next_move_time = sys_clock + obj.speed;
-}
-
 DIRECTION get_direction_to(POSITION from, POSITION to) {
 	if (from.row < to.row) return d_down;      // 아래로 이동
 	if (from.row > to.row) return d_up;        // 위로 이동
@@ -362,7 +310,7 @@ void move_sandworm(void) {
 	if (num_sandworms == 0) {
 		for (int i = 0; i < MAP_HEIGHT; i++) {
 			for (int j = 0; j < MAP_WIDTH; j++) {
-				if (map[0][i][j] == 'W') {
+				if (map[0][i][j] == 'W') { // 샌드웜 위치 찾기
 					sandworm_positions[num_sandworms++] = (POSITION){ i, j };
 				}
 			}
@@ -387,25 +335,45 @@ void move_sandworm(void) {
 			// 다음 위치 계산
 			POSITION next_pos = pmove(sandworm_pos, move_dir);
 
-			// 다음 위치 확인
+			// 다음 위치에 지형이 있다면 회피
 			char next_obj = map[0][next_pos.row][next_pos.column];
+			if (next_obj == 'B' || next_obj == 'P' || next_obj == 'S' ||
+				next_obj == 'R' || next_obj == '#') {
+
+				// 회피: 가능한 다른 방향으로 이동 시도
+				DIRECTION directions[] = { d_up, d_down, d_left, d_right };
+				for (int i = 0; i < 4; i++) {
+					POSITION alt_pos = pmove(sandworm_pos, directions[i]);
+					if (map[0][alt_pos.row][alt_pos.column] == ' ') {
+						next_pos = alt_pos;
+						break;
+					}
+				}
+			}
+
+			// 스파이스 매장지 생성 확률 (10%)
+			if (rand() % 100 < 10) {
+				map[0][sandworm_pos.row][sandworm_pos.column] = 'S'; // 현재 위치에 스파이스 매장지 생성
+			}
+			else {
+				map[0][sandworm_pos.row][sandworm_pos.column] = ' '; // 현재 위치 비우기
+			}
+
+			next_obj = map[0][next_pos.row][next_pos.column];
 			if (next_obj != ' ' && next_obj != 'W' && next_obj != 'B' &&
 				next_obj != 'P' && next_obj != 'S' && next_obj != 'R' && next_obj != '#') {
 				// 유닛 발견 -> 잡아먹음
 				map[0][next_pos.row][next_pos.column] = 'W'; // 유닛 자리로 샌드웜 이동
-				map[0][sandworm_pos.row][sandworm_pos.column] = ' '; // 샌드웜 기존 자리 비우기
 				sandworm_positions[k] = next_pos; // 새로운 위치 저장
 			}
 			else if (next_obj == ' ') {
 				// 빈칸일 경우 이동
 				map[0][next_pos.row][next_pos.column] = 'W'; // 다음 위치로 이동
-				map[0][sandworm_pos.row][sandworm_pos.column] = ' '; // 현재 위치 비우기
 				sandworm_positions[k] = next_pos; // 새로운 위치 저장
 			}
 		}
 	}
 }
-
 
 
 POSITION find_closest_unit(POSITION sandworm_pos) {
