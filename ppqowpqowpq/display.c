@@ -52,18 +52,15 @@ void display(
 	}
 }
 
-
-
 // 자원 상태를 화면에 출력하는 함수
 void display_resource(RESOURCE resource) {
 	move_cursor_to(resource_pos.x, resource_pos.y);
 	set_color(COLOR_RESOURCE);
 	gotoxy(resource_pos);
-	printf("spice = %d/%d, population=%d/%d",
+	printf("spice = %d/%d, population = %d/%d",
 		resource.spice, resource.spice_max,
 		resource.population, resource.population_max);
 }
-
 
 // subfunction of draw_map()
 void project(char src[N_LAYER][MAP_HEIGHT][MAP_WIDTH], char dest[MAP_HEIGHT][MAP_WIDTH]) {
@@ -164,7 +161,7 @@ void display_object_info(int object_id) {  //상태창
 		case 3:
 			printf("[Object Info]: 하베스터(Harvester)        "); break;
 		case 4:
-			printf("[Object Info]: 스파이스 매장지(매장량: %d) ", 1 + (rand() % 9)); break;
+			printf("[Object Info]: 스파이스 매장지(spice)     "); break;
 		case 5:
 			printf("[Object Info]: 장판(Plate)               "); break;
 		case 6:

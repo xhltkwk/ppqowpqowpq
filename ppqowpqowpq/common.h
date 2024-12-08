@@ -78,10 +78,13 @@ inline POSITION dtop(DIRECTION d) {
 /* ================= game data =================== */
 typedef struct {
 	int spice;		// 현재 보유한 스파이스
-	int spice_max;  // 스파이스 최대 저장량
-	int population; // 현재 인구 수
-	int population_max;  // 수용 가능한 인구 수
+	int spice_max;		// 스파이스 최대 저장량
+	int population;		// 현재 인구 수
+	int population_max;	// 수용 가능한 인구 수
+	int spice_reserve;	// 스파이스 매장량 (랜덤)
+	int spice_regen_time;	// 스파이스 생성 주기 (랜덤)
 } RESOURCE;
+
 
 
 // 대강 만들어 봤음. 기능 추가하면서 각자 수정할 것
@@ -95,6 +98,9 @@ typedef struct {
 } OBJECT_SAMPLE;
 
 bool is_object(POSITION pos);
+
+void move_sandworm(void);
+POSITION find_closest_unit(POSITION worm_pos);
 
 #endif
 #pragma once

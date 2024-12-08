@@ -46,24 +46,27 @@ OBJECT_SAMPLE obj = {
 
 /* ================= main() =================== */
 int main(void) {
-	srand((unsigned int)time(NULL));
-
+	srand((unsigned int)time(NULL)); // 랜덤 초기화
 	init();
 	intro();
 
-	while (1) {
+	while (1) { // 메인 루프 시작
 		KEY key = get_key();
-		handle_key_input(key);
+		handle_key_input(key); // 키 입력 처리
 
 		// 샘플 오브젝트 동작
 		sample_obj_move();
 
+		// 샌드웜 동작 추가
+		move_sandworm();
+
 		// 화면 출력
 		display(resource, map, cursor);
 		Sleep(TICK);
-		sys_clock += 10;
+		sys_clock += 10; // 시스템 시간 증가
 	}
 }
+
 
 /* ================= subfunctions =================== */
 void intro(void) {
@@ -78,6 +81,8 @@ void outro(void) {
 }
 
 void init(void) {
+	srand((unsigned int)time(NULL)); // 랜덤 초기화
+
 	// layer 0(map[0])에 지형 생성
 	for (int j = 0; j < MAP_WIDTH; j++) {
 		map[0][0][j] = '#';
@@ -98,11 +103,18 @@ void init(void) {
 			map[1][i][j] = -1;
 		}
 	}
-	// object sample
-	/*map[1][obj.pos.row][obj.pos.column] = 'o';*/
-	//초기 상태 설정
+
+	// 랜덤 자원 초기화
+	resource.spice = rand() % 100 + 50;       // 현재 스파이스 (50~149 랜덤)
+	resource.spice_max = rand() % 200 + 100;  // 최대 스파이스 (100~299 랜덤)
+	resource.population = rand() % 50 + 20;  // 현재 인구 (20~69 랜덤)
+	resource.population_max = rand() % 100 + 50; // 최대 인구 (50~149 랜덤)
+
+	// 초기 상태 설정
 	display_initial_state(map);
 }
+
+
 
 //---------------------커서 이동---------------------------
 void cursor_move(DIRECTION dir, bool is_double_click) {
@@ -258,12 +270,12 @@ void handle_key_input(KEY key) {
 
 			// 주변에 빈 공간이 없는 경우
 			if (!harvester_created) {
-				display_message("Cannot create harvester here!");
+				display_message("Not enough spice");
 			}
 		}
 		else {
 			// 커서 위치가 본진이 아닌 경우
-			display_message("Cannot create harvester here!");
+			display_message("Not enough spice");
 		}
 	}
 }
@@ -329,5 +341,94 @@ void sample_obj_move(void) {
 	map[1][obj.pos.row][obj.pos.column] = obj.repr;
 
 	obj.next_move_time = sys_clock + obj.speed;
+}
+
+DIRECTION get_direction_to(POSITION from, POSITION to) {
+	if (from.row < to.row) return d_down;      // 아래로 이동
+	if (from.row > to.row) return d_up;        // 위로 이동
+	if (from.column < to.column) return d_right; // 오른쪽으로 이동
+	if (from.column > to.column) return d_left;  // 왼쪽으로 이동
+	return d_stay;  // 현재 위치와 목표가 동일
+}
+
+
+//샌드웜 움직이는 함수
+void move_sandworm(void) {
+	static POSITION sandworm_positions[10]; // 최대 10개의 샌드웜 위치를 저장
+	static int num_sandworms = 0;           // 샌드웜 개수 추적
+	static int sandworm_move_timers[10] = { 0 }; // 각 샌드웜의 이동 타이머
+
+	// 초기 샌드웜 위치를 맵에서 한 번만 저장
+	if (num_sandworms == 0) {
+		for (int i = 0; i < MAP_HEIGHT; i++) {
+			for (int j = 0; j < MAP_WIDTH; j++) {
+				if (map[0][i][j] == 'W') {
+					sandworm_positions[num_sandworms++] = (POSITION){ i, j };
+				}
+			}
+		}
+	}
+
+	// 각 샌드웜에 대해 이동 처리
+	for (int k = 0; k < num_sandworms; k++) {
+		if (sys_clock < sandworm_move_timers[k]) {
+			continue; // 이동 주기가 되지 않으면 대기
+		}
+
+		sandworm_move_timers[k] = sys_clock + 500; // 500ms 후 다음 이동 가능
+
+		POSITION sandworm_pos = sandworm_positions[k];
+		POSITION closest_unit = find_closest_unit(sandworm_pos);
+
+		if (closest_unit.row != -1 && closest_unit.column != -1) {
+			// 유닛 방향으로 이동
+			DIRECTION move_dir = get_direction_to(sandworm_pos, closest_unit);
+
+			// 다음 위치 계산
+			POSITION next_pos = pmove(sandworm_pos, move_dir);
+
+			// 다음 위치 확인
+			char next_obj = map[0][next_pos.row][next_pos.column];
+			if (next_obj != ' ' && next_obj != 'W' && next_obj != 'B' &&
+				next_obj != 'P' && next_obj != 'S' && next_obj != 'R' && next_obj != '#') {
+				// 유닛 발견 -> 잡아먹음
+				map[0][next_pos.row][next_pos.column] = 'W'; // 유닛 자리로 샌드웜 이동
+				map[0][sandworm_pos.row][sandworm_pos.column] = ' '; // 샌드웜 기존 자리 비우기
+				sandworm_positions[k] = next_pos; // 새로운 위치 저장
+			}
+			else if (next_obj == ' ') {
+				// 빈칸일 경우 이동
+				map[0][next_pos.row][next_pos.column] = 'W'; // 다음 위치로 이동
+				map[0][sandworm_pos.row][sandworm_pos.column] = ' '; // 현재 위치 비우기
+				sandworm_positions[k] = next_pos; // 새로운 위치 저장
+			}
+		}
+	}
+}
+
+
+
+POSITION find_closest_unit(POSITION sandworm_pos) {
+	POSITION closest_unit = { -1, -1 };  // 초기값: 유닛 없음
+	int min_distance = INT_MAX;
+
+	for (int i = 0; i < MAP_HEIGHT; i++) {
+		for (int j = 0; j < MAP_WIDTH; j++) {
+			char obj = map[0][i][j];
+			if (obj != 'W' && obj != ' ' && obj != 'B' &&
+				obj != 'P' && obj != 'S' && obj != 'R' && obj != '#') {
+				// 유닛 발견 (H 포함)
+				POSITION unit_pos = { i, j };
+				int distance = abs(sandworm_pos.row - i) + abs(sandworm_pos.column - j); // 맨해튼 거리
+
+				if (distance < min_distance) {
+					min_distance = distance;
+					closest_unit = unit_pos;
+				}
+			}
+		}
+	}
+
+	return closest_unit;
 }
 
