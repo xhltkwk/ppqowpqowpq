@@ -137,7 +137,6 @@ void display_message(const char* message) {
 	}
 }
 
-
 // 오브젝트 정보 화면에 출력
 void display_object_info(int object_id) {  //상태창
 	move_cursor_to(status_pos.x, status_pos.y);
