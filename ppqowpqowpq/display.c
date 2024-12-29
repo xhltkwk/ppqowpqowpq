@@ -1,19 +1,19 @@
 /*
 *  display.c:
-* È­¸é¿¡ °ÔÀÓ Á¤º¸¸¦ Ãâ·Â
-* ¸Ê, Ä¿¼­, ½Ã½ºÅÛ ¸Ş½ÃÁö, Á¤º¸Ã¢, ÀÚ¿ø »óÅÂ µîµî
-* io.c¿¡ ÀÖ´Â ÇÔ¼öµéÀ» »ç¿ëÇÔ
+* í™”ë©´ì— ê²Œì„ ì •ë³´ë¥¼ ì¶œë ¥
+* ë§µ, ì»¤ì„œ, ì‹œìŠ¤í…œ ë©”ì‹œì§€, ì •ë³´ì°½, ìì› ìƒíƒœ ë“±ë“±
+* io.cì— ìˆëŠ” í•¨ìˆ˜ë“¤ì„ ì‚¬ìš©í•¨
 */
 
 #include "display.h"
 #include "io.h"
 
-// Ãâ·ÂÇÒ ³»¿ëµéÀÇ ÁÂ»ó´Ü(topleft) ÁÂÇ¥
+// ì¶œë ¥í•  ë‚´ìš©ë“¤ì˜ ì¢Œìƒë‹¨(topleft) ì¢Œí‘œ
 const POSITION resource_pos = { 0, 0 };
 const POSITION map_pos = { 1, 0 };
-const POSITION status_pos = { 0,70 }; // »óÅÂÃ¢  À§Ä¡
-const POSITION command_pos = { 20,70 }; // ¸í·ÉÃ¢ÀÇ  À§Ä¡
-const POSITION system_message_pos = { 20,0 }; // ½Ã½ºÅÛ ¸Ş½ÃÁö À§Ä¡
+const POSITION status_pos = { 0,70 }; // ìƒíƒœì°½  ìœ„ì¹˜
+const POSITION command_pos = { 20,70 }; // ëª…ë ¹ì°½ì˜  ìœ„ì¹˜
+const POSITION system_message_pos = { 20,0 }; // ì‹œìŠ¤í…œ ë©”ì‹œì§€ ìœ„ì¹˜
 
 
 char backbuf[MAP_HEIGHT][MAP_WIDTH] = { 0 };
@@ -25,10 +25,10 @@ void project(char src[N_LAYER][MAP_HEIGHT][MAP_WIDTH], char dest[MAP_HEIGHT][MAP
 void display_resource(RESOURCE resource);
 void display_map(char map[N_LAYER][MAP_HEIGHT][MAP_WIDTH]);
 void display_cursor(CURSOR cursor);
-void display_message(const char* message); // ½Ã½ºÅÛ ¸Ş½ÃÁö Ãâ·Â ÇÔ¼ö
-void display_object_info(int object_id); // °´Ã¼ Á¤º¸ Ãâ·Â ÇÔ¼ö
-void display_commands(); // ¸í·É¾î Ãâ·Â ÇÔ¼ö
-void move_cursor_to(int x, int y); // Ä¿¼­ ÀÌµ¿
+void display_message(const char* message); // ì‹œìŠ¤í…œ ë©”ì‹œì§€ ì¶œë ¥ í•¨ìˆ˜
+void display_object_info(int object_id); // ê°ì²´ ì •ë³´ ì¶œë ¥ í•¨ìˆ˜
+void display_commands(); // ëª…ë ¹ì–´ ì¶œë ¥ í•¨ìˆ˜
+void move_cursor_to(int x, int y); // ì»¤ì„œ ì´ë™
 
 
 
@@ -37,22 +37,22 @@ void display(
 	char map[N_LAYER][MAP_HEIGHT][MAP_WIDTH],
 	CURSOR cursor)
 {
-	// °¢ ¿µ¿ªÀ» È­¸é¿¡ Ãâ·Â
-	display_resource(resource);               // ÀÚ¿ø Á¤º¸ Ãâ·Â
-	display_map(map);                         // ¸Ê Ãâ·Â
-	display_cursor(cursor);                   // Ä¿¼­ Ãâ·Â
-	display_object_info(selected_object, cursor, map);  // ¿ÀºêÁ§Æ® ID Á¤º¸ Ãâ·Â
+	// ê° ì˜ì—­ì„ í™”ë©´ì— ì¶œë ¥
+	display_resource(resource);               // ìì› ì •ë³´ ì¶œë ¥
+	display_map(map);                         // ë§µ ì¶œë ¥
+	display_cursor(cursor);                   // ì»¤ì„œ ì¶œë ¥
+	display_object_info(selected_object);  // ì˜¤ë¸Œì íŠ¸ ID ì •ë³´ ì¶œë ¥
 	display_commands();
 
-	// ÃÊ±â »óÅÂ¿¡¼­´Â ºó ¸Ş½ÃÁö Ãâ·Â
+	// ì´ˆê¸° ìƒíƒœì—ì„œëŠ” ë¹ˆ ë©”ì‹œì§€ ì¶œë ¥
 	static bool is_message_initialized = false;
 	if (!is_message_initialized) {
-		display_message(NULL); // ÃÊ±â »óÅÂ¿¡¼­´Â ºó ¸Ş½ÃÁö Ãâ·Â
+		display_message(NULL); // ì´ˆê¸° ìƒíƒœì—ì„œëŠ” ë¹ˆ ë©”ì‹œì§€ ì¶œë ¥
 		is_message_initialized = true;
 	}
 }
 
-// ÀÚ¿ø »óÅÂ¸¦ È­¸é¿¡ Ãâ·ÂÇÏ´Â ÇÔ¼ö
+// ìì› ìƒíƒœë¥¼ í™”ë©´ì— ì¶œë ¥í•˜ëŠ” í•¨ìˆ˜
 void display_resource(RESOURCE resource) {
 	move_cursor_to(resource_pos.x, resource_pos.y);
 	set_color(COLOR_RESOURCE);
@@ -85,7 +85,7 @@ void display_map(char map[N_LAYER][MAP_HEIGHT][MAP_WIDTH]) {
 				POSITION pos = { i, j };
 				char ch = backbuf[i][j];
 
-				// ¹®ÀÚ¿¡ µû¶ó »ö»ó ¼³Á¤
+				// ë¬¸ìì— ë”°ë¼ ìƒ‰ìƒ ì„¤ì •
 				int color = COLOR_DEFAULT;
 				switch (ch) {
 				case 'B': color = COLOR_BLUE; break;
@@ -104,14 +104,14 @@ void display_map(char map[N_LAYER][MAP_HEIGHT][MAP_WIDTH]) {
 }
 
 
-// frontbuf[][]¿¡¼­ Ä¿¼­ À§Ä¡ÀÇ ¹®ÀÚ¸¦ »ö¸¸ ¹Ù²ã¼­ ±×´ë·Î ´Ù½Ã Ãâ·Â
+// frontbuf[][]ì—ì„œ ì»¤ì„œ ìœ„ì¹˜ì˜ ë¬¸ìë¥¼ ìƒ‰ë§Œ ë°”ê¿”ì„œ ê·¸ëŒ€ë¡œ ë‹¤ì‹œ ì¶œë ¥
 void display_cursor(CURSOR cursor) {
 	POSITION prev = cursor.previous;
 	POSITION curr = cursor.current;
 
-	// ÀÌÀü À§Ä¡ÀÇ ¹®ÀÚ¿Í ¿ø·¡ »ö»ó º¹¿ø
+	// ì´ì „ ìœ„ì¹˜ì˜ ë¬¸ìì™€ ì›ë˜ ìƒ‰ìƒ ë³µì›
 	char ch_prev = frontbuf[prev.row][prev.column];
-	int color_prev = COLOR_DEFAULT; // ±âº» »ö»ó
+	int color_prev = COLOR_DEFAULT; // ê¸°ë³¸ ìƒ‰ìƒ
 	switch (ch_prev) {
 	case 'B': color_prev = COLOR_BLUE; break;
 	case 'H': color_prev = COLOR_RED; break;
@@ -119,112 +119,112 @@ void display_cursor(CURSOR cursor) {
 	case 'S': color_prev = COLOR_ORANGE; break;
 	case 'R': color_prev = COLOR_GRAY; break;
 	}
-	printc(padd(map_pos, prev), ch_prev, color_prev); // ¿ø·¡ »ö»óÀ¸·Î Ãâ·Â
+	printc(padd(map_pos, prev), ch_prev, color_prev); // ì›ë˜ ìƒ‰ìƒìœ¼ë¡œ ì¶œë ¥
 }
 
-//½Ã½ºÅÛ ¸Ş½ÃÁö È­¸é¿¡ Ãâ·Â
+//ì‹œìŠ¤í…œ ë©”ì‹œì§€ í™”ë©´ì— ì¶œë ¥
 void display_message(const char* message) {
-	move_cursor_to(system_message_pos.x, system_message_pos.y);  // ¸Ş½ÃÁö¸¦ Ãâ·ÂÇÒ À§Ä¡·Î ÀÌµ¿
+	move_cursor_to(system_message_pos.x, system_message_pos.y);  // ë©”ì‹œì§€ë¥¼ ì¶œë ¥í•  ìœ„ì¹˜ë¡œ ì´ë™
 	set_color(COLOR_DEFAULT);
 	gotoxy(system_message_pos);
 	if (message == NULL || message[0] == '\0') {
-		// ¸Ş½ÃÁö°¡ ¾ø´Â °æ¿ì ±âº» »óÅÂ Ãâ·Â
-		printf("[System Message]:                      "); // °ø¹éÀ¸·Î ±âÁ¸ ¸Ş½ÃÁö µ¤¾î¾²±â
+		// ë©”ì‹œì§€ê°€ ì—†ëŠ” ê²½ìš° ê¸°ë³¸ ìƒíƒœ ì¶œë ¥
+		printf("[System Message]:                      "); // ê³µë°±ìœ¼ë¡œ ê¸°ì¡´ ë©”ì‹œì§€ ë®ì–´ì“°ê¸°
 	}
 	else {
-		// ¸Ş½ÃÁö°¡ ÀÖ´Â °æ¿ì Ãâ·Â
+		// ë©”ì‹œì§€ê°€ ìˆëŠ” ê²½ìš° ì¶œë ¥
 		printf("[System Message]: %s", message);
 	}
 }
 
-// ¿ÀºêÁ§Æ® Á¤º¸ È­¸é¿¡ Ãâ·Â
-void display_object_info(int object_id) {  //»óÅÂÃ¢
+// ì˜¤ë¸Œì íŠ¸ ì •ë³´ í™”ë©´ì— ì¶œë ¥
+void display_object_info(int object_id) {  //ìƒíƒœì°½
 	move_cursor_to(status_pos.x, status_pos.y);
 	set_color(COLOR_DEFAULT);
 	gotoxy(status_pos);
 
-	// ¼±ÅÃµÈ ¿ÀºêÁ§Æ®¿¡ µû¶ó »óÅÂÃ¢ Ãâ·Â
+	// ì„ íƒëœ ì˜¤ë¸Œì íŠ¸ì— ë”°ë¼ ìƒíƒœì°½ ì¶œë ¥
 	if (object_id == -1) {
 		printf("[Object Info]:                           ");
 	}
 	else if (object_id == 0) {
-		printf("[Object Info]: »ç¸· ÁöÇü                   ");
+		printf("[Object Info]: ì‚¬ë§‰ ì§€í˜•                   ");
 	}
 	else {
 		
 		switch (object_id) {
 		case 1:
-			printf("[Object Info]: º»Áø(Base)                 "); break;
+			printf("[Object Info]: ë³¸ì§„(Base)                 "); break;
 		case 2:
-			printf("[Object Info]: »÷µå¿ú(Sandworm)           "); break;
+			printf("[Object Info]: ìƒŒë“œì›œ(Sandworm)           "); break;
 		case 3:
-			printf("[Object Info]: ÇÏº£½ºÅÍ(Harvester)        "); break;
+			printf("[Object Info]: í•˜ë² ìŠ¤í„°(Harvester)        "); break;
 		case 4:
-			printf("[Object Info]: ½ºÆÄÀÌ½º ¸ÅÀåÁö(spice)     "); break;
+			printf("[Object Info]: ìŠ¤íŒŒì´ìŠ¤ ë§¤ì¥ì§€(spice)     "); break;
 		case 5:
-			printf("[Object Info]: ÀåÆÇ(Plate)               "); break;
+			printf("[Object Info]: ì¥íŒ(Plate)               "); break;
 		case 6:
-			printf("[Object Info]: ¹ÙÀ§(Rock)                "); break;
+			printf("[Object Info]: ë°”ìœ„(Rock)                "); break;
 		default:
-			printf("[Object Info]: ¾Ë ¼ö ¾ø´Â ÁöÇü           "); break;
+			printf("[Object Info]: ì•Œ ìˆ˜ ì—†ëŠ” ì§€í˜•           "); break;
 		}
 	}
 }
 
 
-// ¸í·É¾î Ã¢ÀÇ Ãâ·ÂÀÌ °ãÄ¡Áö ¾Êµµ·Ï Á¶Á¤
-void display_commands() { //¸í·ÉÃ¢
+// ëª…ë ¹ì–´ ì°½ì˜ ì¶œë ¥ì´ ê²¹ì¹˜ì§€ ì•Šë„ë¡ ì¡°ì •
+void display_commands() { //ëª…ë ¹ì°½
 	move_cursor_to(command_pos.x, command_pos.y);
 	gotoxy(command_pos);
-	printf("[Commands]: Move, Attack, Defend"); // [¸í·É¾î]: ÀÌµ¿, °ø°İ, ¹æ¾î
+	printf("[Commands]: Move, Attack, Defend"); // [ëª…ë ¹ì–´]: ì´ë™, ê³µê²©, ë°©ì–´
 }
 
-// »óÅÂÃ¢À» Áö¿ì´Â ÇÔ¼ö
+// ìƒíƒœì°½ì„ ì§€ìš°ëŠ” í•¨ìˆ˜
 void clear_status_display() {
 	move_cursor_to(status_pos.x, status_pos.y);
 	set_color(COLOR_DEFAULT);
 	gotoxy(status_pos);
-	printf("                     "); // ºó °ø°£À¸·Î µ¤¾î¾º¿ò
+	printf("                     "); // ë¹ˆ ê³µê°„ìœ¼ë¡œ ë®ì–´ì”Œì›€
 }
 
-// ÃÊ±â »óÅÂ¸¦ ¼³Á¤ÇÏ¿© Ãâ·ÂÇÏ´Â ÇÔ¼ö
+// ì´ˆê¸° ìƒíƒœë¥¼ ì„¤ì •í•˜ì—¬ ì¶œë ¥í•˜ëŠ” í•¨ìˆ˜
 void display_initial_state(char map[N_LAYER][MAP_HEIGHT][MAP_WIDTH]) {
-	// ÃÊ±â »óÅÂ ¸Ê ¼³Á¤
-	map[0][16][2] = 'B';      // ¾ÆÆ®·¹ÀÌµğ½º º»Áø
+	// ì´ˆê¸° ìƒíƒœ ë§µ ì„¤ì •
+	map[0][16][2] = 'B';      // ì•„íŠ¸ë ˆì´ë””ìŠ¤ ë³¸ì§„
 	map[0][16][1] = 'B';
-	map[0][15][2] = 'B';      // ¾ÆÆ®·¹ÀÌµğ½º º»Áø
+	map[0][15][2] = 'B';      // ì•„íŠ¸ë ˆì´ë””ìŠ¤ ë³¸ì§„
 	map[0][15][1] = 'B';
-	map[0][16][4] = 'P';      // ¾ÆÆ®·¹ÀÌµğ½º ÀåÆÇ
+	map[0][16][4] = 'P';      // ì•„íŠ¸ë ˆì´ë””ìŠ¤ ì¥íŒ
 	map[0][16][3] = 'P';
-	map[0][15][4] = 'P';      // ¾ÆÆ®·¹ÀÌµğ½º ÀåÆÇ
+	map[0][15][4] = 'P';      // ì•„íŠ¸ë ˆì´ë””ìŠ¤ ì¥íŒ
 	map[0][15][3] = 'P';
-	map[0][14][1] = 'H';      // ¾ÆÆ®·¹ÀÌµğ½º ÇÏº£½ºÅÍ
+	map[0][14][1] = 'H';      // ì•„íŠ¸ë ˆì´ë””ìŠ¤ í•˜ë² ìŠ¤í„°
 
-	map[0][1][56] = 'P';     // ÇÏÄÚ³Ù ÀåÆÇ
+	map[0][1][56] = 'P';     // í•˜ì½”ë„¨ ì¥íŒ
 	map[0][2][56] = 'P';
 	map[0][1][55] = 'P';
 	map[0][2][55] = 'P';
-	map[0][1][57] = 'B';     // ÇÏÄÚ³Ù º»Áø
+	map[0][1][57] = 'B';     // í•˜ì½”ë„¨ ë³¸ì§„
 	map[0][1][58] = 'B';
-	map[0][2][57] = 'B';     // ÇÏÄÚ³Ù º»Áø
+	map[0][2][57] = 'B';     // í•˜ì½”ë„¨ ë³¸ì§„
 	map[0][2][58] = 'B';
-	map[0][3][58] = 'H';     // ÇÏÄÚ³Ù ÇÏº£½ºÅÍ
+	map[0][3][58] = 'H';     // í•˜ì½”ë„¨ í•˜ë² ìŠ¤í„°
 
-	map[0][12][1] = 'S';      // ½ºÆÄÀÌ½º ¸ÅÀåÁö (ÁÂ»ó´Ü)
-	map[0][5][58] = 'S';      // ½ºÆÄÀÌ½º ¸ÅÀåÁö (¿ìÇÏ´Ü)
+	map[0][12][1] = 'S';      // ìŠ¤íŒŒì´ìŠ¤ ë§¤ì¥ì§€ (ì¢Œìƒë‹¨)
+	map[0][5][58] = 'S';      // ìŠ¤íŒŒì´ìŠ¤ ë§¤ì¥ì§€ (ìš°í•˜ë‹¨)
 
-	map[0][5][20] = 'R';      // ¹ÙÀ§
+	map[0][5][20] = 'R';      // ë°”ìœ„
 	map[0][5][21] = 'R';
-	map[0][6][20] = 'R';      // ¹ÙÀ§
+	map[0][6][20] = 'R';      // ë°”ìœ„
 	map[0][6][21] = 'R';
-	map[0][10][15] = 'R';      // ¹ÙÀ§
-	map[0][13][45] = 'R';      // ¹ÙÀ§
-	map[0][12][25] = 'R';      // ¹ÙÀ§
+	map[0][10][15] = 'R';      // ë°”ìœ„
+	map[0][13][45] = 'R';      // ë°”ìœ„
+	map[0][12][25] = 'R';      // ë°”ìœ„
 	map[0][12][26] = 'R';
-	map[0][13][25] = 'R';      // ¹ÙÀ§
+	map[0][13][25] = 'R';      // ë°”ìœ„
 	map[0][13][26] = 'R';
-	map[0][6][40] = 'R';      // ¹ÙÀ§
+	map[0][6][40] = 'R';      // ë°”ìœ„
 
-	map[0][4][12] = 'W';      // »÷µå¿ú (»ó´Ü)
-	map[0][11][35] = 'W';      // »÷µå¿ú (ÇÏ´Ü)
+	map[0][4][12] = 'W';      // ìƒŒë“œì›œ (ìƒë‹¨)
+	map[0][11][35] = 'W';      // ìƒŒë“œì›œ (í•˜ë‹¨)
 }
